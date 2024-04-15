@@ -16,16 +16,15 @@ const Login = () => {
 
   return (
     <div className="flex flex-col items-center justify-center mix-w-96 mx-auto">
-      <div className="w-full p-6 rounded-lg shadow-md bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-10">
-        <h1 className="text-3xl font-semibold text-center text-grey-300">
+      <div className="p-6 w-80 h-90 rounded-lg shadow-md bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-10">
+        <h1 className="text-4xl font-semibold text-center text-grey-300 p-2">
           Login
-          <span className="text-blue-500"> ChatApp</span>
         </h1>
 
         <form onSubmit={handleSubmit}>
           <div>
             <label className="label">
-              <span className="text-base label-text">Username</span>
+              <span className="label-text text-xl">Username</span>
             </label>
             <input
               type="text"
@@ -38,7 +37,7 @@ const Login = () => {
 
           <div>
             <label className="label">
-              <span className="text-base label-text">Password</span>
+              <span className="text-xl label-text">Password</span>
             </label>
             <input
               type="password"
@@ -51,7 +50,7 @@ const Login = () => {
 
           <Link
             to="/signup"
-            className="text-sm hover:underline hover:text-blue-600 mt-2 inline-block"
+            className="text-sm hover:underline hover:text-blue-600 mt-5 ml-1 inline-block"
           >
             {"Don't"} have an account?
           </Link>
