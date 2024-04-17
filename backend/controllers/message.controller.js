@@ -7,9 +7,13 @@ import {messageLoggers} from '../utils/logger.js';
 export const sendMessage = async (req, res) => {
   try {
     const { message } = req.body;
+    const { id: receiverId } = req.params;
+    const senderId = req.user._id;
     
     const newMessage = await send(
-      message
+      message,
+      senderId,
+      receiverId
     )
 
     res.status(STATUS_CODES.CREATED).json(newMessage);
@@ -22,8 +26,8 @@ export const sendMessage = async (req, res) => {
 
 export const getMessages = async (req, res) => {
     try{
-       const { id: userToChatId } = req.params;
-       const senderId = req.user._id;
+        const { id: userToChatId } = req.params;
+        const senderId = req.user._id;
 
         const message = await get(senderId, userToChatId);
 

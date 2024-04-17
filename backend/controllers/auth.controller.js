@@ -10,15 +10,17 @@ export const signup = async (req,res) => {
     try{
         const {fullName,username, password, confirmPassword, gender} = req.body;
        
-        const response = await signupservice(
+        const newUser = await signupservice(
             fullName,
             username,
             password,
             confirmPassword,
             gender
         )
+
+        generateTokenandSetCookie(newUser._id, res);
         
-        return res.status(STATUS_CODES.CREATED).json({data: response})
+        return res.status(STATUS_CODES.CREATED).json({data: newUser})
 
     } catch (error) {
        // console.log("Error in signup controller", error.message)
@@ -31,12 +33,14 @@ export const login = async (req, res) => {
     try{
         const {username, password} = req.body;
 
-        const response = await loginservice(
+        const user = await loginservice(
             username,
             password
         )
-
-        return res.status(STATUS_CODES.CREATED).json({data: response});
+        
+        generateTokenandSetCookie(user._id, res);
+        
+        return res.status(STATUS_CODES.CREATED).json({data: user});
         
     } catch (error) {
         //console.log("Error in login controller!", error.message);

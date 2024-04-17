@@ -1,6 +1,5 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
-import generateTokenandSetCookie from "../utils/generateToken.js";
 import MESSAGES from "../common/messages.js";
 
 export const signupservice = async (
@@ -46,10 +45,8 @@ export const signupservice = async (
         profilePic: gender === "male" ? boyProfilePic : girlProfilePic,
       });
 
-      response.token = generateTokenandSetCookie(newUser._id, res);
-
       await newUser.save();
-    }P
+    }
 
     return response;
   } catch (error) {
@@ -76,16 +73,9 @@ export const loginservice = async (username, password) => {
       response.message = MESSAGES.INVALID_USERNAME_0R_PASSWORD;
       response.success = false;
     }
-
-    if(user){
-      response.token = generateTokenandSetCookie(user._id, res);
-    } else {
-      response.message = MESSAGES.CAN_NOT_LOGIN;
-      response.success = false;
-    }
     
 
-    return response;
+    return user;
 
   } catch (error) {
     console.log(error.message);

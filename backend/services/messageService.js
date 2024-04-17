@@ -2,9 +2,9 @@ import MESSAGES from "../common/messages.js";
 import STATUS_CODES from "../common/statusCodes.js";
 import Conversation from "../models/conversation.model.js";
 import Message from "../models/message.model.js";
-import { getReceiverSocketId, io } from "../socket/socket.js";
+import { getReceiverSocketId, io } from '../socket/socket.js'
 
-export const send = async (message) => {
+export const send = async (message, senderId,receiverId) => {
   const response = {
     message: MESSAGES.SUCCESSFULLY_SEND_MESSAGE,
     success: true,
@@ -24,7 +24,7 @@ export const send = async (message) => {
     const newMessage = new Message({
       senderId,
       receiverId,
-      message,
+      message
     });
 
     if (newMessage) {
@@ -46,10 +46,10 @@ export const send = async (message) => {
       io.to(receiverSocketId).emit("newMessage", newMessage);
     }
 
-    return response;
+    return newMessage;
   } catch (error) {
     console.log(error.message);
-    return response.message;
+    return error.message;
   }
 };
 
@@ -65,16 +65,18 @@ export const get = async (senderId, userToChatId) => {
     }).populate("messages");
 
     if (!conversation) {
-      return res.status(STATUS_CODES.OK).json([]);
+      //return res.status(STATUS_CODES.OK).json([]);
+      return ([]);
     }
 
     const message = conversation.messages;
-    if (message) {
-      return message;
-    } else {
+    if (!message) {
+      
       response.message = MESSAGES.CAN_NOT_GET_USERS;
       response.success = false;
     }
+
+    return message;
   } catch (error) {
     console.log(error.message);
     return response.message;
