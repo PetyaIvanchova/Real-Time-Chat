@@ -8,6 +8,8 @@ import userRoutes from './routes/user.routes.js';
 import connectToDB from './db/connectToDB.js';
 
 import {app, server} from './socket/socket.js';
+import logger from './utils/logger.js';
+import MESSAGES from './common/messages.js';
 
 const PORT = process.env.PORT || 5000;
 
@@ -29,5 +31,5 @@ app.get("*", (req,res) => {
 
 server.listen(PORT, () =>{
     connectToDB();
-    console.log(`Server is running on port ${PORT}`);
+    logger.info(`${MESSAGES.SERVER_IS_RUNNING_ON_PORT} ${PORT}`)
 })

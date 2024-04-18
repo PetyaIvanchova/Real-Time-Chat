@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useAuthContext } from "../context/AuthContext";
 import toast from "react-hot-toast";
+import MESSAGES from "../../../backend/common/messages";
 
 const useLogin = () => {
     const [loading, setLoading] = useState(false);
@@ -27,14 +28,14 @@ const useLogin = () => {
             const data = await res.json();
 
             if(data.error){
-                throw new Error(error.message);
+                throw new Error(data.error);
             }
 
             localStorage.setItem('chat-user', JSON.stringify(data));
 
             setAuthUser(data);
         } catch (error) {
-            toast.error(error.message);
+            toast.error(MESSAGES.INVALID_USERNAME_0R_PASSWORD);
         } finally {
             setLoading(false);
         }

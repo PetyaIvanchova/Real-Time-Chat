@@ -1,5 +1,6 @@
 import MESSAGES from "../common/messages.js";
 import User from "../models/user.model.js";
+import logger from "../utils/logger.js";
 
 export const get = async (loggedInUserId) => {
   try {
@@ -9,7 +10,7 @@ export const get = async (loggedInUserId) => {
 
     return filteredUsers;
   } catch (error) {
-    console.log(error.message);
+    logger.error(error.message);
     return MESSAGES.INTERNAL_SERVER_ERROR;
   }
 };

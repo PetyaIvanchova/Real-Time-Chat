@@ -1,8 +1,9 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
 import MESSAGES from "../common/messages.js";
+import logger from "../utils/logger.js";
 
-export const signupservice = async (
+export const signupService = async (
   fullName,
   username,
   password,
@@ -11,13 +12,12 @@ export const signupservice = async (
 ) => {
   const response = {
     message: MESSAGES.SUCCESSFULLY_SIGNUP,
-    token: null,
     success: true,
+    data: null
   };
 
   try {
     if (password !== confirmPassword) {
-      //return res.status(400).json({ error: "Password didn't match" });
       response.message = MESSAGES.PASSWORD_MISSMATCHED;
       response.success = false;
     }
@@ -25,7 +25,6 @@ export const signupservice = async (
     const user = await User.findOne({ username });
 
     if (user) {
-      //return res.status(400).json({ error: "Username already exists!" });
       response.message = MESSAGES.USERNAME_ALREADY_EXISTS;
       response.success = false;
     }
@@ -46,20 +45,22 @@ export const signupservice = async (
       });
 
       await newUser.save();
+
+      response.data = newUser;
     }
 
     return response;
   } catch (error) {
-    console.log(error.message);
+    logger.error(error.message);
     return response.message;
   }
 };
 
-export const loginservice = async (username, password) => {
+export const loginService = async (username, password) => {
   const response = {
     message: MESSAGES.SUCCESSFULLY_LOGIN,
-    token: null,
     success: true,
+    data: null
   };
   try {
     const user = await User.findOne({ username });
@@ -69,16 +70,16 @@ export const loginservice = async (username, password) => {
     );
 
     if (!user || !isPasswordCorrect) {
-      //return res.status(400).json({ error: "Invalid username or password!" });
       response.message = MESSAGES.INVALID_USERNAME_0R_PASSWORD;
       response.success = false;
+    } else {
+      response.data = user;
     }
-    
 
-    return user;
+    return response;
 
   } catch (error) {
-    console.log(error.message);
+    logger.error(error.message);
     return response.message;
   }
 };

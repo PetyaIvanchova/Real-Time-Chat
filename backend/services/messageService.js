@@ -1,10 +1,10 @@
 import MESSAGES from "../common/messages.js";
-import STATUS_CODES from "../common/statusCodes.js";
 import Conversation from "../models/conversation.model.js";
 import Message from "../models/message.model.js";
 import { getReceiverSocketId, io } from '../socket/socket.js'
+import logger from "../utils/logger.js";
 
-export const send = async (message, senderId,receiverId) => {
+export const send = async (senderId, receiverId, message) => {
   const response = {
     message: MESSAGES.SUCCESSFULLY_SEND_MESSAGE,
     success: true,
@@ -48,8 +48,8 @@ export const send = async (message, senderId,receiverId) => {
 
     return newMessage;
   } catch (error) {
-    console.log(error.message);
-    return error.message;
+    logger.error(error.message);
+    return response.message;
   }
 };
 
@@ -65,7 +65,6 @@ export const get = async (senderId, userToChatId) => {
     }).populate("messages");
 
     if (!conversation) {
-      //return res.status(STATUS_CODES.OK).json([]);
       return ([]);
     }
 
@@ -78,7 +77,7 @@ export const get = async (senderId, userToChatId) => {
 
     return message;
   } catch (error) {
-    console.log(error.message);
+    logger.error(error.message);
     return response.message;
   }
 };

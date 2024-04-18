@@ -1,61 +1,84 @@
-import MESSAGES from '../common/messages.js';
-import STATUS_CODES from '../common/statusCodes.js';
+import MESSAGES from "../common/messages.js";
+import STATUS_CODES from "../common/statusCodes.js";
 import generateTokenandSetCookie from "../utils/generateToken.js";
 
-import {signupservice, loginservice} from '../services/authService.js';
+import { signupService, loginService } from "../services/authService.js";
 
-import {authLoggers} from '../utils/logger.js';
+import logger from "../utils/logger.js";
 
-export const signup = async (req,res) => {
-    try{
-        const {fullName,username, password, confirmPassword, gender} = req.body;
-       
-        const newUser = await signupservice(
-            fullName,
-            username,
-            password,
-            confirmPassword,
-            gender
-        )
+export const signup = async (req, res) => {
+  try {
+    const { fullName, username, password, confirmPassword, gender } = req.body;
 
-        generateTokenandSetCookie(newUser._id, res);
-        
-        return res.status(STATUS_CODES.CREATED).json({data: newUser})
+    const response = await signupService(
+      fullName,
+      username,
+      password,
+      confirmPassword,
+      gender
+    );
+     
 
-    } catch (error) {
-       // console.log("Error in signup controller", error.message)
-        authLoggers.log('error', MESSAGES.ERROR_IN_SIGNUP_CONTROLLER);
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json(MESSAGES.INTERNAL_SERVER_ERROR)
+    if (response.success=true) {
+      generateTokenandSetCookie(response.data._id, res);
+      return res.status(STATUS_CODES.CREATED).json({
+        _id: response.data._id,
+        fullName: response.data.fullName,
+        username: response.data.username,
+        profilePic: response.data.profilePic
+      });
+     
+    } else {
+      return res
+      .status(STATUS_CODES.Unauthorized)
+      .json({ error: MESSAGES.CAN_NOT_REGISTER });
     }
-}
+  } catch (error) {
+    logger.error(error.message);
+    res
+      .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
+      .json({ error: MESSAGES.INTERNAL_SERVER_ERROR });
+  }
+};
 
 export const login = async (req, res) => {
-    try{
-        const {username, password} = req.body;
+  try {
+    const { username, password } = req.body;
 
-        const user = await loginservice(
-            username,
-            password
-        )
-        
-        generateTokenandSetCookie(user._id, res);
-        
-        return res.status(STATUS_CODES.CREATED).json({data: user});
-        
-    } catch (error) {
-        //console.log("Error in login controller!", error.message);
-        authLoggers.log('error', MESSAGES.ERROR_IN_LOGIN_CONTROLLER);
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json(MESSAGES.INTERNAL_SERVER_ERROR)
+    const response = await loginService(username, password);
+   
+    if (response.success=true) {
+      generateTokenandSetCookie(response.data._id, res);
+      return res.status(STATUS_CODES.CREATED).json({
+        _id: response.data._id,
+        fullName: response.data.fullName,
+        username: response.data.username,
+        profilePic: response.data.profilePic
+      });
+     
+    } else {
+      return res
+      .status(STATUS_CODES.Unauthorized)
+      .json({ error: MESSAGES.CAN_NOT_LOGIN });
     }
-}
+  } catch (error) {
+    logger.error(error.message);
+    res
+      .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
+      .json({ error: MESSAGES.INTERNAL_SERVER_ERROR });
+  }
+};
 
 export const logout = (req, res) => {
-    try{
-        res.cookie('jwt', "", {maxAge: 0})
-        res.status(STATUS_CODES.OK).json(MESSAGES.LOGGED_OUT_SUCCESSFULLY);
-    } catch (error){
-        //console.log("Error in logout controller", error.message);
-        authLoggers.log('error', MESSAGES.ERROR_IN_LOGOUT_CONTROLLER);
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json(MESSAGES.INTERNAL_SERVER_ERROR)
-    }
-} 
+  try {
+    res.cookie("jwt", "", { maxAge: 0 });
+    res
+      .status(STATUS_CODES.OK)
+      .json({ message: MESSAGES.LOGGED_OUT_SUCCESSFULLY });
+  } catch (error) {
+    logger.error(error.message);
+    res
+      .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
+      .json({ error: MESSAGES.INTERNAL_SERVER_ERROR });
+  }
+};

@@ -1,19 +1,16 @@
-import winston, { transports } from 'winston';
+import winston from 'winston';
 
-export const authLoggers = winston.createLogger({
-    level: 'error',
+const logger = winston.createLogger({
     format: winston.format.json(),
     transports: [new winston.transports.Console()]
 })
 
-export const messageLoggers = winston.createLogger({
-    level: 'error',
-    format: winston.format.json(),
-    transports: [new winston.transports.Console()]
-})
+const info = (message) => {
+    logger.info(message);
+}
 
-export const usersLoggers = winston.createLogger({
-    level: 'error',
-    format: winston.format.json(),
-    transports: [new winston.transports.Console()]
-})
+const error = (message) => {
+    logger.error(message);
+}
+
+export default {info, error};

@@ -17,7 +17,17 @@ const MESSAGES = {
     ERROR_IN_SENDMESSAGE_CONTROLLER: 'Error in sendMessage controller',
     ERROR_IN_GETMESSAGE_CONTROLLER: 'Error in getMessage controller',
     ERROR_IN_GET_USERS_FOR_SIDEBAR: 'Error in getUsersForSideBar',
-    CAN_NOT_LOGIN: 'Can not login'
+    CAN_NOT_LOGIN: 'Can not login',
+    CAN_NOT_REGISTER: 'Can not register',
+    CAN_NOT_LOGOUT: 'Can not logout',
+    CONNECTED_TO_MONGODB: "Connected to MongoDB",
+    ERROR_CONNECTING_TO_MONDODB: "Error connecting to MongoDB",
+    UNAUTHORIZED: "Unauthorized - No Token Provided",
+    USER_NOT_FOUND: "User not found",
+    USER_DISCONNECTED: 'user disconnected',
+    A_USER_CONNECTED: "a user connected",
+    SERVER_IS_RUNNING_ON_PORT: `Server is running on port`,
+    INVALID_VALUES: 'Invalid values'
 }
 
 export default MESSAGES;
