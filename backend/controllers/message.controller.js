@@ -6,14 +6,15 @@ import logger from '../utils/logger.js';
 
 export const sendMessage = async (req, res) => {
   try {
-    const { message } = req.body;
+    const { text, photo } = req.body;
     const { id: receiverId } = req.params;
     const senderId = req.user._id;
     
     const newMessage = await send(
       senderId,
       receiverId,
-      message
+      text,
+      photo
     )
 
     res.status(STATUS_CODES.CREATED).json(newMessage);

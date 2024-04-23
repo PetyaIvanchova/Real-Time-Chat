@@ -4,7 +4,7 @@ import Message from "../models/message.model.js";
 import { getReceiverSocketId, io } from '../socket/socket.js'
 import logger from "../utils/logger.js";
 
-export const send = async (senderId, receiverId, message) => {
+export const send = async (senderId, receiverId, text, photo) => {
   const response = {
     message: MESSAGES.SUCCESSFULLY_SEND_MESSAGE,
     success: true,
@@ -24,7 +24,8 @@ export const send = async (senderId, receiverId, message) => {
     const newMessage = new Message({
       senderId,
       receiverId,
-      message
+      text,
+      photo
     });
 
     if (newMessage) {
