@@ -1,15 +1,13 @@
 import { BsEmojiSmile, BsImage, BsSend } from "react-icons/bs";
 import useSendText from "../../hooks/useSendText";
-import { useState } from "react";
 import useSendImage from "../../hooks/useSendImage";
-import EmojiContainer from "../emoji/EmojiContainer";
+import useConversation from "../../zustand/useConversation";
 
 const MessageInput = () => {
-  const [text, setText] = useState("");
   const { loadingText, sendText } = useSendText();
   const { loadingImage, sendImage } = useSendImage();
-  const {showEmoji, setShowEmoji} = EmojiContainer();
-	console.log(showEmoji);
+  const {text, setText, showEmoji, setShowEmoji} = useConversation();
+	
   const handleText = async () => {
     if (!text) {
       return;
@@ -69,16 +67,11 @@ const MessageInput = () => {
             type="file"
             onChange={uploadImage}
           />
-		  {showEmoji ? '' : (
-			loadingImage ? (
-				<div className="loading loading-spinner"></div>
-			) : (  <BsImage color="white" />)
-		  )}
-          {/*{loadingImage || showEmoji ? (
+          {loadingImage ? (
             <div className="loading loading-spinner"></div>
           ) : (
             <BsImage color="white" />
-		  )}*/}
+		  )}
         </div>
         <div
           onClick={handleText}

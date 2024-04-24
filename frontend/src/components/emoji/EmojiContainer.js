@@ -1,9 +1,7 @@
-import useSendText from "../../hooks/useSendText";
-import { useState } from "react";
+import useConversation from "../../zustand/useConversation";
 
 const EmojiContainer = () => {
-    const [showEmoji, setShowEmoji] = useState(false);
-    const {setText} = useSendText();
+    const {text, setText} = useConversation();
 
     const addEmoji = (e) => {
         const sym = e.unified.split("_");
@@ -13,7 +11,7 @@ const EmojiContainer = () => {
         setText(text + emoji);
       };
 
-    return {showEmoji, setShowEmoji, addEmoji}
+    return {addEmoji}
 }
 
 export default EmojiContainer;
