@@ -1,6 +1,7 @@
 import { useState } from "react"
 import toast from "react-hot-toast";
 import { useAuthContext } from "../context/AuthContext";
+import MESSAGES from "../../../backend/common/messages";
 
 const useSignup = () => {
     const [loading, setLoading] = useState(false);
@@ -36,7 +37,7 @@ const useSignup = () => {
 
             //console.log(data);
         } catch (error) {
-            toast.error(error.message);
+            toast.error(MESSAGES.INVALID_VALUES);
         } finally {
             setLoading(false);
         }

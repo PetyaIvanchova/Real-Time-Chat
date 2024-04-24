@@ -1,86 +1,84 @@
-import bcrypt from 'bcryptjs';
-import User from "../models/user.model.js";
-import generateTokenandSetCookie from '../utils/generateToken.js';
+import MESSAGES from "../common/messages.js";
+import STATUS_CODES from "../common/statusCodes.js";
+import generateTokenandSetCookie from "../utils/generateToken.js";
 
-export const signup = async (req,res) => {
-    try{
-        const {fullName,username, password, confirmPassword, gender} = req.body;
-       
-        if(password !== confirmPassword){
-            return res.status(400).json({error: "Password didn't match"})
-        }
+import { signupService, loginService } from "../services/authService.js";
 
-        const user = await User.findOne({username});
+import logger from "../utils/logger.js";
 
-        if(user){
-            return res.status(400).json({error: "Username already exists!"})
-        }
+export const signup = async (req, res) => {
+  try {
+    const { fullName, username, password, confirmPassword, gender } = req.body;
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+    const response = await signupService(
+      fullName,
+      username,
+      password,
+      confirmPassword,
+      gender
+    );
+     
 
-        const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${username}`;
-        const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${username}`;
-
-        const newUser = new User({
-            fullName,
-            username,
-            password: hashedPassword,
-            gender,
-            profilePic: gender === "male" ? boyProfilePic : girlProfilePic
-        })
-
-        if(newUser){
-            generateTokenandSetCookie(newUser._id, res);
-
-            await newUser.save();
-
-            res.status(201).json({
-                _id: newUser._id,
-                fullName: newUser.fullName,
-                username: newUser.username,
-                profilePic: newUser.profilePic
-            })
-        } else {
-            res.status(400).json({error: "Invalid user data!"})
-        }
-
-    } catch (error) {
-        console.log("Error in signup controller", error.message)
-        res.status(500).json({error: "Internal Server Error"})
+    if (response.success=true) {
+      generateTokenandSetCookie(response.data._id, res);
+      return res.status(STATUS_CODES.CREATED).json({
+        _id: response.data._id,
+        fullName: response.data.fullName,
+        username: response.data.username,
+        profilePic: response.data.profilePic
+      });
+     
+    } else {
+      return res
+      .status(STATUS_CODES.Unauthorized)
+      .json({ error: MESSAGES.CAN_NOT_REGISTER });
     }
-}
+  } catch (error) {
+    logger.error(error.message);
+    res
+      .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
+      .json({ error: MESSAGES.INTERNAL_SERVER_ERROR });
+  }
+};
 
 export const login = async (req, res) => {
-    try{
-        const {username, password} = req.body;
-        const user = await User.findOne({username});
-        const isPasswordCorrect = await bcrypt.compare(password, user?.password || "");
+  try {
+    const { username, password } = req.body;
 
-        if(!user || !isPasswordCorrect){
-            return res.status(400).json({error: "Invalid username or password!"})
-        }
-
-        generateTokenandSetCookie(user._id, res);
-
-        res.status(200).json({
-            _id: user._id,
-            fullName: user.fullName,
-            username: user.username,
-            profilePic: user.profilePic
-        });
-    } catch (error) {
-        console.log("Error in login controller!", error.message);
-        res.status(500).json({error: "Internal Server Error"})
+    const response = await loginService(username, password);
+   
+    if (response.success=true) {
+      generateTokenandSetCookie(response.data._id, res);
+      return res.status(STATUS_CODES.CREATED).json({
+        _id: response.data._id,
+        fullName: response.data.fullName,
+        username: response.data.username,
+        profilePic: response.data.profilePic
+      });
+     
+    } else {
+      return res
+      .status(STATUS_CODES.Unauthorized)
+      .json({ error: MESSAGES.CAN_NOT_LOGIN });
     }
-}
+  } catch (error) {
+    logger.error(error.message);
+    res
+      .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
+      .json({ error: MESSAGES.INTERNAL_SERVER_ERROR });
+  }
+};
 
-export const logout = (req,res) => {
-    try{
-        res.cookie('jwt', "", {maxAge: 0})
-        res.status(200).json({message: "Logged out successfully"});
-    } catch (error){
-        console.log("Error in logout controller", error.message);
-        res.status(500).json({error: "Internal Server Error"})
-    }
-} 
+export const logout = (req, res) => {
+  try {
+    res.cookie("jwt", "", { maxAge: 0 });
+    res
+      .status(STATUS_CODES.OK)
+      .json({ message: MESSAGES.LOGGED_OUT_SUCCESSFULLY });
+  } catch (error) {
+    logger.error(error.message);
+    res
+      .status(STATUS_CODES.INTERNAL_SERVER_ERROR)
+      .json({ error: MESSAGES.INTERNAL_SERVER_ERROR });
+  }
+};
