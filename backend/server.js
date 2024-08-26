@@ -11,7 +11,7 @@ import {app, server} from './socket/socket.js';
 import logger from './utils/logger.js';
 import MESSAGES from './common/messages.js';
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 const __dirname = path.resolve();
 

@@ -9,7 +9,7 @@ const useSignup = () => {
 
     const signup = async ({fullName, username, password, confirmPassword, gender}) => {
         const success = handleInputError({fullName, username, password, confirmPassword, gender})
-
+        
         if(!success){
             return;
         }
@@ -23,8 +23,9 @@ const useSignup = () => {
                 },
                 body: JSON.stringify({fullName, username, password, confirmPassword, gender})
             })
-
+            
             const data = await res.json();
+            
             if(data.error) {
                 throw new Error(data.error);
             }
